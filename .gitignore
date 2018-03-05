@@ -1,0 +1,10 @@
+.idea/
+.settings/
+.pydevproject
+.project
+*.iml
+*.ipr
+*.iws
+/target/
+/spark-warehouse/
+/checkpoint/
