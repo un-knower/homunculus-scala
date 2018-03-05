@@ -4,10 +4,11 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.streaming.Trigger
 
 /**
- * 运行通过
+ * CPKafka2ConsoleTest
+ *
+ * @author Jade
  */
-object ContinuousProcessingTest {
-
+object CPKafka2ConsoleTest {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
@@ -21,18 +22,12 @@ object ContinuousProcessingTest {
       .option("kafka.bootstrap.servers", "127.0.0.1:9092")
       .option("subscribe", "spark_test_from")
       .load()
-      .selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
-      .writeStream
-      .format("kafka")
-      .option("kafka.bootstrap.servers", "127.0.0.1:9092")
-      .option("topic", "spark_test_to")
-      .option("checkpointLocation", "checkpoint")
-      .trigger(Trigger.Continuous(100)) // only change in query
-      .start()
+      .selectExpr("CAST(value AS STRING)")
 
-    query.awaitTermination()
+    query.writeStream
+      .format("console")
+      .trigger(Trigger.Continuous(100))
+      .start()
+      .awaitTermination()
   }
 }
-
-
-

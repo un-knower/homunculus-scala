@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 
 /**
  * spark2.2.0运行通过
- * spark2.3.0未运行通过
+ * spark2.3.0运行通过
  *  由于lz4(spark-sql-kafka)和lz4-java(spark-core)版本冲突
  */
 object StructuredStreamingTest {
