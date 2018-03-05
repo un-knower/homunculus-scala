@@ -1,6 +1,7 @@
 package com.homunculus.spark
 
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.streaming.Trigger
 
 
 object ContinuousProcessingTest {
@@ -13,23 +14,7 @@ object ContinuousProcessingTest {
       .getOrCreate()
 
 
-    //    val kafkaSourceDF = spark
-    //      .readStream
-    //      .format("kafka")
-    //      .option("kafka.bootstrap.servers", "192.168.11.30:9092,192.168.11.33:9092,192.168.11.35:9092")
-    //      .option("subscribe", "redcliff.order")
-    //      .load().selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
-    //
-    //    kafkaSourceDF.writeStream
-    //      .format("kafka")
-    //      .option("kafka.bootstrap.servers", "192.168.11.30:9092,192.168.11.33:9092,192.168.11.35:9092")
-    //      .option("topic", "spark_continuous_processing_test")
-    //      .option("checkpointLocation", "checkpoint")
-    //      .trigger(Trigger.Continuous("1 second")) // only change in query
-    //      .start()
-
-
-    spark
+    val query = spark
       .readStream
       .format("kafka")
       .option("kafka.bootstrap.servers", "127.0.0.1:9092")
@@ -41,10 +26,9 @@ object ContinuousProcessingTest {
       .option("kafka.bootstrap.servers", "127.0.0.1:9092")
       .option("topic", "spark_test_to")
       .option("checkpointLocation", "checkpoint")
-      //.trigger(Trigger.Continuous(100))  // only change in query
+      .trigger(Trigger.Continuous(100))  // only change in query
       .start()
-
-
+    query.awaitTermination()
   }
 }
 
