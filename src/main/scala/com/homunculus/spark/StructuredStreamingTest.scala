@@ -2,8 +2,11 @@ package com.homunculus.spark
 
 import org.apache.spark.sql.SparkSession
 
-
-object SparkKafka {
+/**
+ * spark2.2.0运行通过
+ * spark2.3.0未运行通过
+ */
+object StructuredStreamingTest {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
