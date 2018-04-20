@@ -67,7 +67,6 @@ object StructuredStreaming2ESTest {
       .awaitTermination()
 
   }
-
 }
 
 
