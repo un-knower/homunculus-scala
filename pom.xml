@@ -13,6 +13,7 @@
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
         <elasticsearch.hadoop>6.2.3</elasticsearch.hadoop>
+        <jcommander.version>1.72</jcommander.version>
     </properties>
 
     <dependencies>
@@ -69,6 +70,12 @@
                     <groupId>net.jpountz.lz4</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!--commander-->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>${jcommander.version}</version>
         </dependency>
 
     </dependencies>

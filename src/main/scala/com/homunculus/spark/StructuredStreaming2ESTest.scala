@@ -2,8 +2,9 @@ package com.homunculus.spark
 
 import java.text.SimpleDateFormat
 
+import com.beust.jcommander.JCommander
 import com.google.gson.{Gson, GsonBuilder}
-import com.homunculus.common.CanalModel
+import com.homunculus.common.{CanalModel, CommandArgs}
 import org.apache.spark.sql.streaming.{OutputMode, Trigger}
 import org.apache.spark.sql.{Row, SparkSession}
 
@@ -14,6 +15,10 @@ import org.apache.spark.sql.{Row, SparkSession}
  */
 object StructuredStreaming2ESTest {
   def main(args: Array[String]): Unit = {
+
+    new JCommander(CommandArgs).parse(args.toArray: _*)
+    println(CommandArgs.toString)
+
     val spark = SparkSession
       .builder
       .appName("StructuredNetworkWordCount")
@@ -23,13 +28,12 @@ object StructuredStreaming2ESTest {
 
     import spark.implicits._
 
-
     val query = spark
       .readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "192.168.11.30:19092")
-      .option("group.id", "StructuredStreaming2ESTest")
-      .option("subscribe", "redcliff.order_abandon_log")
+      .option("kafka.bootstrap.servers", CommandArgs.brokers)
+      .option("group.id", CommandArgs.groupId)
+      .option("subscribe", CommandArgs.topic)
       .option("failOnDataLoss", "false")
       .load()
       .selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
@@ -51,11 +55,11 @@ object StructuredStreaming2ESTest {
     query.writeStream
       .outputMode(OutputMode.Append)
       .format("org.elasticsearch.spark.sql")
-      .trigger(Trigger.ProcessingTime(2000))
+      .trigger(Trigger.ProcessingTime(CommandArgs.interval))
       .option("checkpointLocation", "checkpoint")
       .option("es.mapping.id", "id")
-      .option("es.nodes", "192.168.11.51")
-      .option("es.port", "9200")
+      .option("es.nodes", CommandArgs.esNodes)
+      .option("es.port", CommandArgs.esPort)
       .option("es.index.auto.create", "true")
       .option("es.write.operation", "upsert")
       .option("es.update.retry.on.conflict", "10")
@@ -72,7 +76,7 @@ object StructuredStreaming2ESTest {
 
 /**
  *
- * 日期类型用var 用于空串转null (kafka过来就是空串)
+ * 日期类型用var 用于空串(空串写入es日期会报错)转null (kafka过来就是空串)
  *
  * @param index_pt 动态索引指定字段
  */
@@ -105,3 +109,8 @@ case class OrderAbandonLogType(val id: java.lang.Long,
     this
   }
 }
+
+
+
+
+
