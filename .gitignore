@@ -5,6 +5,7 @@
 *.iml
 *.ipr
 *.iws
+derby.log
 /target/
 /spark-warehouse/
 /checkpoint/
