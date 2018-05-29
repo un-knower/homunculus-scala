@@ -16,7 +16,10 @@ import org.apache.spark.sql.{Row, SparkSession}
 object StructuredStreaming2ESTest {
   def main(args: Array[String]): Unit = {
 
-    new JCommander(CommandArgs).parse(args.toArray: _*)
+    classOf[JCommander]
+      .getConstructor(classOf[Object])
+      .newInstance(CommandArgs)
+      .parse(args: _*)
     println(CommandArgs.toString)
 
     val spark = SparkSession
